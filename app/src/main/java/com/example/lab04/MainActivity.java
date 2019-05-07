@@ -6,9 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_main);
         String[] values = new String[]{"Pies",
                         "Kot", "Koń", "Gołąb", "Kruk", "Dzik", "Karp",
@@ -35,11 +40,28 @@ public class MainActivity extends AppCompatActivity {
                         android.R.id.text2},
 
                 SimpleCursorAdapter.IGNORE_ITEM_VIEW_TYPE
+
         );
 
 
         ListView listview = (ListView) findViewById(R.id.listView);
         listview.setAdapter(this.adapter);
+        listview.setOnItemClickListener(new
+                AdapterView.OnItemClickListener(){
+                    @Override
+                    public void onItemClick(AdapterView<?>
+                                                    adapter, View view, int pos, long id)
+                    {
+                        TextView name = (TextView) view.findViewById(android.R.id.text1);
+                        Animal zwierz = db.pobierz(Integer.parseInt (name.getText().toString()));
+                        Intent intencja = new
+                                Intent(getApplicationContext(),
+                                DodajWpis.class);
+                        intencja.putExtra("element", zwierz);
+                        startActivityForResult(intencja, 2);
+
+                    }
+                });
 
 
     }
@@ -70,6 +92,17 @@ public class MainActivity extends AppCompatActivity {
                     extras.getSerializable("nowy");
             //target.add(nowy);
             this.db.dodaj(nowy);
+            adapter.changeCursor(db.lista());
+            adapter.notifyDataSetChanged();
+        }
+        if(requestCode==2 && resultCode==RESULT_OK)
+        {
+            Bundle extras = data.getExtras();
+            //String nowy = (String)extras.get("wpis");
+            Animal nowy = (Animal)
+                    extras.getSerializable("nowy");
+            //target.add(nowy);
+            this.db.aktualizuj(nowy);
             adapter.changeCursor(db.lista());
             adapter.notifyDataSetChanged();
         }
