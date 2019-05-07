@@ -10,6 +10,10 @@ public class Animal implements Serializable {
     private float size;
     private String description;
 
+    public Animal(){
+
+    }
+
     public Animal(String species, String color, float size, String description){
         super();
         this.species = species;

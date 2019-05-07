@@ -32,19 +32,31 @@ public class MySQLite extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void dodaj(Animal zwierz) {
+        SQLiteDatabase db =
+                this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("species", zwierz.getSpecies());
+        values.put("color", zwierz.getColor());
+        values.put("size", zwierz.getSize());
+        values.put("description", zwierz.getDescription());
+        db.insert("animals", null, values);
+        db.close();
+    }
     public void usun(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("animals", "_id = ?", new String[] { id });
         db.close();
     }
+
     public int aktualizuj(Animal zwierz) {
         SQLiteDatabase db =
                 this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("gatunek", zwierz.getSpecies());
-        values.put("kolor", zwierz.getColor());
-        values.put("wielkosc", zwierz.getSize());
-        values.put("opis", zwierz.getDescription());
+        values.put("species", zwierz.getSpecies());
+        values.put("color", zwierz.getColor());
+        values.put("size", zwierz.getSize());
+        values.put("description", zwierz.getDescription());
         int i = db.update("animals", values, "_id = ?", new String[]{String.valueOf(zwierz.get_id())});
         db.close();
         return i;
@@ -56,7 +68,7 @@ public class MySQLite extends SQLiteOpenHelper {
         Cursor cursor =
                 db.query("animals", //a. table name
                         new String[] { "_id",
-                                "gatunek", "kolor", "wielkosc", "opis" },"_id = ?", // c. selections
+                                "species", "color", "size", "description" },"_id = ?", // c. selections
                         new String[] {
                                 String.valueOf(id) }, // d. selections args
                         null, // e. group by
